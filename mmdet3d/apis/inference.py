@@ -18,6 +18,8 @@ from mmdet3d.registry import DATASETS, MODELS
 from mmdet3d.structures import Box3DMode, Det3DDataSample, get_box_type
 from mmdet3d.structures.det3d_data_sample import SampleList
 
+import time
+
 
 def convert_SyncBN(config):
     """Convert config's naiveSyncBN to BN.
@@ -152,6 +154,8 @@ def inference_detector(model: nn.Module,
         get_box_type(cfg.test_dataloader.dataset.box_type_3d)
 
     data = []
+    data_load_start = time.time()
+
     for pcd in pcds:
         # prepare data
         if isinstance(pcd, str):
@@ -175,16 +179,25 @@ def inference_detector(model: nn.Module,
         data_ = test_pipeline(data_)
         data.append(data_)
 
-    collate_data = pseudo_collate(data)
+    data_load_end = time.time()
+    data_load_time = data_load_end - data_load_start
 
+    collate_start = time.time()
+    collate_data = pseudo_collate(data)
+    collate_end = time.time()
+    collate_time = collate_end - collate_start
+
+    predict_start = time.time()
     # forward the model
     with torch.no_grad():
         results = model.test_step(collate_data)
+    predict_end = time.time()
+    predict_time = predict_end - predict_start
 
     if not is_batch:
-        return results[0], data[0]
+        return results[0], data[0], data_load_time, collate_time, predict_time
     else:
-        return results, data
+        return results, data, data_load_time, collate_time, predict_time
 
 
 def inference_multi_modality_detector(model: nn.Module,
