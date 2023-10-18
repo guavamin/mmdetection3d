@@ -86,6 +86,33 @@ def nuscenes_data_prep(root_path,
     create_groundtruth_database(dataset_name, root_path, info_prefix,
                                 f'{info_prefix}_infos_train.pkl')
 
+def custom_data_prep(root_path,
+                       info_prefix,
+                       dataset_name,
+                       out_dir,
+                       max_sweeps=10):
+    """Prepare data related to your custom dataset.
+
+    Related data consists of '.pkl' files recording basic infos,
+    2D annotations and groundtruth database.
+
+    Args:
+        root_path (str): Path of dataset root.
+        info_prefix (str): The prefix of info filenames.
+        dataset_name (str): The dataset class name.
+        out_dir (str): Output directory of the groundtruth database info.
+        max_sweeps (int, optional): Number of input consecutive frames.
+            Default: 10
+    """
+    nuscenes_converter.create_custom_infos(
+        root_path, info_prefix, version=version, max_sweeps=max_sweeps)
+
+    info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
+    info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
+    update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_train_path)
+    update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_val_path)
+    create_groundtruth_database(dataset_name, root_path, info_prefix,
+                                f'{info_prefix}_infos_train.pkl')
 
 def lyft_data_prep(root_path, info_prefix, version, max_sweeps=10):
     """Prepare data related to Lyft dataset.
@@ -376,5 +403,11 @@ if __name__ == '__main__':
     elif args.dataset == 'semantickitti':
         semantickitti_data_prep(
             info_prefix=args.extra_tag, out_dir=args.out_dir)
+    elif args.dataset == 'custom':
+        scannet_data_prep(
+            root_path=args.root_path,
+            info_prefix=args.extra_tag,
+            out_dir=args.out_dir,
+            workers=args.workers)
     else:
         raise NotImplementedError(f'Don\'t support {args.dataset} dataset.')
