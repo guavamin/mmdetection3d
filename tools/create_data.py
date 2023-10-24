@@ -7,6 +7,7 @@ from tools.dataset_converters import kitti_converter as kitti
 from tools.dataset_converters import lyft_converter as lyft_converter
 from tools.dataset_converters import nuscenes_converter as nuscenes_converter
 from tools.dataset_converters import semantickitti_converter
+from tools.dataset_converters import custom_converter
 from tools.dataset_converters.create_gt_database import (
     GTDatabaseCreater, create_groundtruth_database)
 from tools.dataset_converters.update_infos_to_v2 import update_pkl_infos
@@ -86,6 +87,9 @@ def nuscenes_data_prep(root_path,
     create_groundtruth_database(dataset_name, root_path, info_prefix,
                                 f'{info_prefix}_infos_train.pkl')
 
+
+# ============== Customized Dataset Creator Start From Here ==============
+
 def custom_data_prep(root_path,
                        info_prefix,
                        dataset_name,
@@ -104,8 +108,8 @@ def custom_data_prep(root_path,
         max_sweeps (int, optional): Number of input consecutive frames.
             Default: 10
     """
-    nuscenes_converter.create_custom_infos(
-        root_path, info_prefix, version=version, max_sweeps=max_sweeps)
+    custom_converter.create_custom_infos(
+        root_path, info_prefix)
 
     info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
     info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
@@ -113,6 +117,10 @@ def custom_data_prep(root_path,
     update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_val_path)
     create_groundtruth_database(dataset_name, root_path, info_prefix,
                                 f'{info_prefix}_infos_train.pkl')
+
+
+# ============== Customized Dataset Creator End Here ==============
+
 
 def lyft_data_prep(root_path, info_prefix, version, max_sweeps=10):
     """Prepare data related to Lyft dataset.

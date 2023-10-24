@@ -36,7 +36,7 @@ def create_custom_infos(root_path, info_prefix):
 def _fill_trainval_infos(root_path):
     train_infos = []
     val_infos = []
-    use_camera = True
+    use_camera = False
 
     trainSet = root_path + '/ImageSets/train.txt'
     valSet = root_path + '/ImageSets/val.txt'
@@ -51,7 +51,7 @@ def _fill_trainval_infos(root_path):
             val_dict.add(ann)
 
     totalPoints = os.listdir(root_path + '/points')
-    pcdLabels = os.listdir(root_path + '/pcd_labels')
+    pcdLabels = os.listdir(root_path + '/')
     imageLabels = os.listdir(root_path + '/img_labels')
     for i in range(len(totalPoints)):
        
@@ -89,12 +89,6 @@ def _fill_trainval_infos(root_path):
                                                         [0, 0, 0, 1]
                                                     ])
         info['lidar_points']['Tr_imu_to_velo'] = None
-
-        cameras = [
-            'cam62',
-            # 'cam63',
-            # 'cam64',
-        ]
 
         for cam_name in cameras:
             if cam_name not in info['images']:
@@ -167,8 +161,6 @@ def _fill_trainval_infos(root_path):
         else:
             val_infos.append(info)
                
-
-
 
     return train_infos, val_infos
 
