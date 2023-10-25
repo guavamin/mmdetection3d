@@ -51,14 +51,12 @@ def _fill_trainval_infos(root_path):
             ann = ann.strip('\n')
             val_dict.add(ann)
 
-    totalPoints = os.listdir(root_path + '/points')
-    pcdLabels = os.listdir(root_path + '/labels')
+    totalPoints = sorted(os.listdir(root_path + '/points'))
+    pcdLabels = sorted(os.listdir(root_path + '/labels'))
 
     for i in range(len(totalPoints)):
        
         file_name = totalPoints[i][:-4]
-
-        print("file_name: ", file_name)
 
         lidar_path = root_path + '/points/' + file_name + '.bin'
        
@@ -67,13 +65,13 @@ def _fill_trainval_infos(root_path):
         mmengine.check_file_exist(lidar_path)
         mmengine.check_file_exist(pcdLabel_path)
 
-        with open('/content/mmdetection3d/data/custom/points/000000.bin', 'rb') as f:
+        with open(lidar_path, 'rb') as f:
             # Read the data into a NumPy array
             point_cloud_array = np.fromfile(f, dtype=np.float64).reshape(-1, 6)
         
         time_stamp = point_cloud_array[0, 5]
 
-        print("time_stamp: ", time_stamp)
+        # print("time_stamp: ", time_stamp)
         
         info = {
             'sample_idx': i,
@@ -90,7 +88,7 @@ def _fill_trainval_infos(root_path):
             # i = 0
             for ann in f.readlines(): # ann right here is string not dict
                 annotation = eval(ann)
-                print(annotation)
+                # print(annotation)
                 # print(annotation['sample_idx'])
                 # print(annotation['labels'])
                 # print(annotation['boxes'])
@@ -104,13 +102,14 @@ def _fill_trainval_infos(root_path):
                         # info['instances'][-1]['bbox_label_3d'] = 3
       
 
-        # if file_name in train_dict:
-        #     train_infos.append(info)
-        # else:
-        #     val_infos.append(info)
-    print(info)
-    sys.exit("Debug stop right here")         
-
+        if file_name in train_dict:
+            train_infos.append(info)
+        else:
+            val_infos.append(info)     
+    
+    # print(train_infos)
+    # print(val_infos)
+    
     return train_infos, val_infos
 
 if __name__ == '__main__':
