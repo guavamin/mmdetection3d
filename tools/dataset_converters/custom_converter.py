@@ -53,10 +53,13 @@ def _fill_trainval_infos(root_path):
 
     totalPoints = os.listdir(root_path + '/points')
     pcdLabels = os.listdir(root_path + '/labels')
+
     for i in range(len(totalPoints)):
        
         file_name = totalPoints[i][:-4]
+
         print("file_name: ", file_name)
+
         lidar_path = root_path + '/points/' + file_name + '.bin'
        
         pcdLabel_path = root_path + '/labels/' + file_name + '.txt'
@@ -64,9 +67,13 @@ def _fill_trainval_infos(root_path):
         mmengine.check_file_exist(lidar_path)
         mmengine.check_file_exist(pcdLabel_path)
 
-        time_stamp = 
+        with open('/content/mmdetection3d/data/custom/points/000000.bin', 'rb') as f:
+            # Read the data into a NumPy array
+            point_cloud_array = np.fromfile(f, dtype=np.float64).reshape(-1, 6)
         
-        print('time_stamp: ', time_stamp)
+        time_stamp = point_cloud_array[0, 5]
+
+        print("time_stamp: ", time_stamp)
         
         info = {
             'sample_idx': i,
@@ -79,30 +86,30 @@ def _fill_trainval_infos(root_path):
         info['lidar_points']['lidar_path'] = lidar_path
         info['lidar_points']['num_pts_feats'] = 5
 
-        sys.exit("Debug stop right here")
-
         with open(pcdLabel_path, 'r', encoding='utf-8') as f:
             # i = 0
-            for ann in f.readlines():
-                ann = ann.strip('\n')
-                ann = ann.split()
-                if len(ann):
-                    info['instances'].append(dict())
-                    info['instances'][-1]['bbox'] = [0, 0, 0, 0]
-                    info['instances'][-1]['bbox_label'] = pcdCategories[ann[1]]
-                    info['instances'][-1]['bbox_3d'] = [float(ann[2])/100, float(ann[3])/100, float(ann[4])/100, float(ann[7])/100, float(ann[9])/100, float(ann[8])/100, float(ann[6])/180*math.pi]
-                    info['instances'][-1]['bbox_label_3d'] = pcdCategories[ann[1]]
-                    info['instances'][-1]['alpha'] = 0.0
-                    info['instances'][-1]['occluded'] = int(float(ann[11]))
-                    info['instances'][-1]['truncated'] = int(float(ann[10]))
-                    info['instances'][-1]['difficulty'] = int(float(ann[12]))-2
-                    info['instances'][-1]['score'] = 0.0
-       
-        if file_name in train_dict:
-            train_infos.append(info)
-        else:
-            val_infos.append(info)
-               
+            for ann in f.readlines(): # ann right here is string not dict
+                annotation = eval(ann)
+                print(annotation)
+                # print(annotation['sample_idx'])
+                # print(annotation['labels'])
+                # print(annotation['boxes'])
+                # print(annotation['confidence'])
+                if len(annotation):
+                    for index in range(len(annotation['boxes'])):
+                        info['instances'].append({'bbox': [annotation['boxes'][index][0][0], annotation['boxes'][index][0][1], annotation['boxes'][index][1][0], annotation['boxes'][index][1][1]], 'bbox_label': annotation['labels'][index]})
+                        # info['instances'].append(['bbox'] = [0, 0, 0, 0])
+                        # info['instances'][-1]['bbox_label'] = 2
+                        # info['instances'][-1]['bbox_3d'] = [1, 1, 1, 1]
+                        # info['instances'][-1]['bbox_label_3d'] = 3
+      
+
+        # if file_name in train_dict:
+        #     train_infos.append(info)
+        # else:
+        #     val_infos.append(info)
+    print(info)
+    sys.exit("Debug stop right here")         
 
     return train_infos, val_infos
 
