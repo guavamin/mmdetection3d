@@ -91,10 +91,9 @@ def nuscenes_data_prep(root_path,
 # ============== Customized Dataset Creator Start From Here ==============
 
 def custom_data_prep(root_path,
-                       info_prefix,
-                       dataset_name,
-                       out_dir,
-                       max_sweeps=10):
+                      info_prefix,
+                      dataset_name,
+                      out_dir):
     """Prepare data related to your custom dataset.
 
     Related data consists of '.pkl' files recording basic infos,
@@ -111,12 +110,12 @@ def custom_data_prep(root_path,
     custom_converter.create_custom_infos(
         root_path, info_prefix)
 
-    info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
-    info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
-    update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_train_path)
-    update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_val_path)
-    create_groundtruth_database(dataset_name, root_path, info_prefix,
-                                f'{info_prefix}_infos_train.pkl')
+    # info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
+    # info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
+    # update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_train_path)
+    # update_pkl_infos('nuscenes', out_dir=out_dir, pkl_path=info_val_path)
+    # create_groundtruth_database(dataset_name, root_path, info_prefix,
+    #                             f'{info_prefix}_infos_train.pkl')
 
 
 # ============== Customized Dataset Creator End Here ==============
@@ -412,10 +411,10 @@ if __name__ == '__main__':
         semantickitti_data_prep(
             info_prefix=args.extra_tag, out_dir=args.out_dir)
     elif args.dataset == 'custom':
-        scannet_data_prep(
+        custom_data_prep(
             root_path=args.root_path,
             info_prefix=args.extra_tag,
-            out_dir=args.out_dir,
-            workers=args.workers)
+            dataset_name='Custom',
+            out_dir=args.out_dir)
     else:
         raise NotImplementedError(f'Don\'t support {args.dataset} dataset.')
