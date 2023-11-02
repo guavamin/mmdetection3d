@@ -1,5 +1,5 @@
 voxel_size = [0.16, 0.16, 4]  # adjust according to your dataset
-point_cloud_range = [0, -39.68, -3, 69.12, 39.68, 1]  # adjust according to your dataset
+# point_cloud_range = [0, -39.68, -3, 69.12, 39.68, 1]  # adjust according to your dataset
 model = dict(
     type='VoxelNet',
     data_preprocessor=dict(
@@ -7,7 +7,7 @@ model = dict(
         voxel=True,
         voxel_layer=dict(
             max_num_points=32,
-            point_cloud_range=point_cloud_range,
+            point_cloud_range=[0, -39.68, -3, 69.12, 39.68, 1],
             voxel_size=voxel_size,
             max_voxels=(16000, 40000))),
     voxel_encoder=dict(
@@ -16,7 +16,7 @@ model = dict(
         feat_channels=[64],
         with_distance=False,
         voxel_size=voxel_size,
-        point_cloud_range=point_cloud_range),
+        point_cloud_range=[0, -39.68, -3, 69.12, 39.68, 1]),
     # the `output_shape` should be adjusted according to `point_cloud_range`
     # and `voxel_size`
     middle_encoder=dict(
