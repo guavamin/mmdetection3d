@@ -5,11 +5,11 @@ from .det3d_dataset import Det3DDataset
 
 
 @DATASETS.register_module()
-class Custom_Dataset(Det3DDataset):
+class CustomDataset(Det3DDataset):
 
     # replace with all the classes in customized pkl info file
     METAINFO = {
-        'classes': ('Pedestrian', 'Car')
+        'classes': ('pedestrian', 'car')
     }
 
     def parse_ann_info(self, info):

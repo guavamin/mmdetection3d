@@ -1,7 +1,10 @@
+from mmengine import init_default_scope
+init_default_scope('mmdet3d')
+
 # dataset settings
-dataset_type = 'custom'
+dataset_type = 'CustomDataset'
 data_root = 'data/custom/'
-class_names = ['Pedestrian', 'Vehicle']  # replace with your dataset class
+class_names = ['pedestrian', 'car']  # replace with your dataset class
 point_cloud_range = [0, -40, -3, 70.4, 40, 1]  # adjust according to your dataset
 input_modality = dict(use_lidar=True, use_camera=False)
 metainfo = dict(classes=class_names)
