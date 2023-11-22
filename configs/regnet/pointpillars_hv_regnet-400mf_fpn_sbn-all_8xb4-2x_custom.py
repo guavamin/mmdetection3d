@@ -1,3 +1,11 @@
+# from mmdet3d.datasets.custom_dataset import CustomDataset
+
+# dataset = dict(type='CustomDataset')
+
+# custom_imports = dict(imports='CustomDataset', allow_failed_imports=False)
+
+# dataset = dict(type='CustomDataset')
+
 _base_ = [
     '../_base_/models/pointpillars_hv_fpn_custom.py',
     '../_base_/datasets/custom.py',
