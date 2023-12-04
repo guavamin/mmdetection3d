@@ -1,7 +1,7 @@
 # from mmengine import init_default_scope
 # init_default_scope('mmdet3d')
 
-from mmdet3d.datasets.custom_dataset import CustomDataset
+# from mmdet3d.datasets.custom_dataset import CustomDataset
 
 # dataset settings
 dataset_type = 'CustomDataset'

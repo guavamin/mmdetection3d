@@ -43,7 +43,7 @@ def _fill_trainval_infos(root_path):
 
     trainSet = root_path + '/ImageSets/train.txt'
     valSet = root_path + '/ImageSets/val.txt'
-    train_dict  , val_dict = set(), set()
+    train_dict , val_dict = set(), set()
     with open(trainSet, 'r', encoding='utf-8') as f:
         for ann in f.readlines():
             ann = ann.strip('\n')
@@ -52,6 +52,8 @@ def _fill_trainval_infos(root_path):
         for ann in f.readlines():
             ann = ann.strip('\n')
             val_dict.add(ann)
+
+    # print(train_dict , val_dict)
 
     totalPoints = sorted(os.listdir(root_path + '/points'))
     pcdLabels = sorted(os.listdir(root_path + '/labels'))
@@ -104,13 +106,10 @@ def _fill_trainval_infos(root_path):
                         # info['instances'][-1]['bbox_label_3d'] = 3
       
 
-        if file_name in train_dict:
+        if file_name + '.bin' in train_dict:
             train_infos.append(info)
         else:
             val_infos.append(info)     
-    
-    # print(train_infos)
-    # print(val_infos)
     
     return train_infos, val_infos
 
