@@ -168,7 +168,7 @@ class Det3DDataset(BaseDataset):
             dict: Annotations after filtering.
         """
         img_filtered_annotations = {}
-        filter_mask = ann_info['gt_labels_3d'] > -1
+        filter_mask = ann_info['gt_bboxes_labels'] > -1
         for key in ann_info.keys():
             if key != 'instances':
                 img_filtered_annotations[key] = (ann_info[key][filter_mask])
@@ -254,7 +254,7 @@ class Det3DDataset(BaseDataset):
                 ann_info[mapped_ann_name] = temp_anns
             ann_info['instances'] = info['instances']
 
-            for label in ann_info['gt_labels_3d']:
+            for label in ann_info['gt_bboxes_labels']:
                 if label != -1:
                     cat_name = self.metainfo['classes'][label]
                     self.num_ins_per_cat[cat_name] += 1
