@@ -2,7 +2,7 @@ import mmengine
 
 from mmdet3d.registry import DATASETS
 from .det3d_dataset import Det3DDataset
-
+from mmdet3d.structures import LiDARInstance3DBoxes
 
 @DATASETS.register_module()
 class CustomDataset(Det3DDataset):
@@ -34,6 +34,6 @@ class CustomDataset(Det3DDataset):
 
         # filter the gt classes not used in training
         ann_info = self._remove_dontcare(ann_info)
-        gt_bboxes_3d = LiDARInstance3DBoxes(ann_info['gt_bboxes_3d'])
-        ann_info['gt_bboxes_3d'] = gt_bboxes_3d
+        # gt_bboxes_3d = LiDARInstance3DBoxes(ann_info['gt_bboxes_3d'])
+        # ann_info['gt_bboxes_3d'] = gt_bboxes_3d
         return ann_info
