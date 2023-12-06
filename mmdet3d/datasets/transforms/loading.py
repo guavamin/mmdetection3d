@@ -362,13 +362,13 @@ class LoadPointsFromMultiSweeps(BaseTransform):
         """
         try:
             pts_bytes = get(pts_filename, backend_args=self.backend_args)
-            points = np.frombuffer(pts_bytes, dtype=np.float32)
+            points = np.frombuffer(pts_bytes, dtype=np.float64)
         except ConnectionError:
             mmengine.check_file_exist(pts_filename)
             if pts_filename.endswith('.npy'):
                 points = np.load(pts_filename)
             else:
-                points = np.fromfile(pts_filename, dtype=np.float32)
+                points = np.fromfile(pts_filename, dtype=np.float64)
         return points
 
     def _remove_close(self,
@@ -620,13 +620,13 @@ class LoadPointsFromFile(BaseTransform):
         """
         try:
             pts_bytes = get(pts_filename, backend_args=self.backend_args)
-            points = np.frombuffer(pts_bytes, dtype=np.float32)
+            points = np.frombuffer(pts_bytes, dtype=np.float64)
         except ConnectionError:
             mmengine.check_file_exist(pts_filename)
             if pts_filename.endswith('.npy'):
                 points = np.load(pts_filename)
             else:
-                points = np.fromfile(pts_filename, dtype=np.float32)
+                points = np.fromfile(pts_filename, dtype=np.float64)
 
         return points
 

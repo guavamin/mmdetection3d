@@ -71,9 +71,9 @@ def _fill_trainval_infos(root_path):
 
         with open(lidar_path, 'rb') as f:
             # Read the data into a NumPy array
-            point_cloud_array = np.fromfile(f, dtype=np.float64).reshape(-1, 6)
+            point_cloud_array = np.fromfile(f, dtype=np.float64).reshape(-1, 5)
         
-        time_stamp = point_cloud_array[0, 5]
+        time_stamp = point_cloud_array[0, 4]
 
         # print("time_stamp: ", time_stamp)
         
