@@ -514,7 +514,9 @@ class ObjectNoise(BaseTransform):
         points = input_dict['points']
 
         # TODO: this is inplace operation
-        numpy_box = gt_bboxes_3d.numpy()
+        #numpy_box is already a numpy.array, don't need to transfer it from tensor to numpy.array
+        # numpy_box = gt_bboxes_3d.numpy()
+        numpy_box = gt_bboxes_3d
         numpy_points = points.numpy()
 
         noise_per_object_v3_(
