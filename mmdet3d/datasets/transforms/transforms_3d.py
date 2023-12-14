@@ -517,18 +517,20 @@ class ObjectNoise(BaseTransform):
         #numpy_box is already a numpy.array, don't need to transfer it from tensor to numpy.array
         # numpy_box = gt_bboxes_3d.numpy()
         numpy_box = gt_bboxes_3d
-        numpy_points = points.numpy()
+        numpy_points = points.numpy()[:, 0:3] # get rid of intensity and timestamp
 
-        noise_per_object_v3_(
-            numpy_box,
-            numpy_points,
-            rotation_perturb=self.rot_range,
-            center_noise_std=self.translation_std,
-            global_random_rot_range=self.global_rot_range,
-            num_try=self.num_try)
+        # noise_per_object_v3_(
+        #     numpy_box,
+        #     numpy_points,
+        #     rotation_perturb=self.rot_range,
+        #     center_noise_std=self.translation_std,
+        #     global_random_rot_range=self.global_rot_range,
+        #     num_try=self.num_try)
 
-        input_dict['gt_bboxes_3d'] = gt_bboxes_3d.new_box(numpy_box)
-        input_dict['points'] = points.new_point(numpy_points)
+        # input_dict['gt_bboxes_3d'] = gt_bboxes_3d.new_box(numpy_box)
+        # input_dict['points'] = points.new_point(numpy_points)
+        input_dict['gt_bboxes_3d'] = gt_bboxes_3d
+        input_dict['points'] = points
         return input_dict
 
     def __repr__(self) -> str:
@@ -725,7 +727,7 @@ class GlobalRotScaleTrans(BaseTransform):
         noise_rotation = np.random.uniform(rotation[0], rotation[1])
 
         if 'gt_bboxes_3d' in input_dict and \
-                len(input_dict['gt_bboxes_3d'].tensor) != 0:
+                len(input_dict['gt_bboxes_3d']) != 0:
             # rotate points with bboxes
             points, rot_mat_T = input_dict['gt_bboxes_3d'].rotate(
                 noise_rotation, input_dict['points'])

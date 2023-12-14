@@ -382,30 +382,33 @@ def noise_per_object_v3_(gt_boxes,
         size=[num_boxes, num_try])
 
     origin = (0.5, 0.5, 0)
-    gt_box_corners = box_np_ops.center_to_corner_box3d(
-        gt_boxes[:, :3],
-        gt_boxes[:, 3:6],
-        gt_boxes[:, 6],
-        origin=origin,
-        axis=2)
+    
+    gt_box_corners = gt_boxes
 
-    # TODO: rewrite this noise box function?
-    if not enable_grot:
-        selected_noise = noise_per_box(gt_boxes[:, [0, 1, 3, 4, 6]],
-                                       valid_mask, loc_noises, rot_noises)
-    else:
-        selected_noise = noise_per_box_v2_(gt_boxes[:, [0, 1, 3, 4, 6]],
-                                           valid_mask, loc_noises, rot_noises,
-                                           global_rot_noises)
+    # gt_box_corners = box_np_ops.center_to_corner_box3d(
+    #     gt_boxes[:, :3],
+    #     gt_boxes[:, 3:6],
+    #     gt_boxes[:, 6],
+    #     origin=origin,
+    #     axis=2)
 
-    loc_transforms = _select_transform(loc_noises, selected_noise)
-    rot_transforms = _select_transform(rot_noises, selected_noise)
-    surfaces = box_np_ops.corner_to_surfaces_3d_jit(gt_box_corners)
-    if points is not None:
-        # TODO: replace this points_in_convex function by my tools?
-        point_masks = box_np_ops.points_in_convex_polygon_3d_jit(
-            points[:, :3], surfaces)
-        points_transform_(points, gt_boxes[:, :3], point_masks, loc_transforms,
-                          rot_transforms, valid_mask)
+    # # TODO: rewrite this noise box function?
+    # if not enable_grot:
+    #     selected_noise = noise_per_box(gt_boxes[:, [0, 1, 3, 4, 6]],
+    #                                    valid_mask, loc_noises, rot_noises)
+    # else:
+    #     selected_noise = noise_per_box_v2_(gt_boxes[:, [0, 1, 3, 4, 6]],
+    #                                        valid_mask, loc_noises, rot_noises,
+    #                                        global_rot_noises)
 
-    box3d_transform_(gt_boxes, loc_transforms, rot_transforms, valid_mask)
+    # loc_transforms = _select_transform(loc_noises, selected_noise)
+    # rot_transforms = _select_transform(rot_noises, selected_noise)
+    # surfaces = box_np_ops.corner_to_surfaces_3d_jit(gt_box_corners)
+    # if points is not None:
+    #     # TODO: replace this points_in_convex function by my tools?
+    #     point_masks = box_np_ops.points_in_convex_polygon_3d_jit(
+    #         points[:, :3], surfaces)
+    #     points_transform_(points, gt_boxes[:, :3], point_masks, loc_transforms,
+    #                       rot_transforms, valid_mask)
+
+    # box3d_transform_(gt_boxes, loc_transforms, rot_transforms, valid_mask)
